@@ -13,4 +13,4 @@ This is a VR music game. Players will take on the role of a "Bard" who commands 
 
 ## 运行环境
 * Arduino IDE (ESP32 核心库)
-* Unity 202x.x
+* Unity 2022.3.62f3
