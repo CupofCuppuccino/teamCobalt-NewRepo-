@@ -19,7 +19,7 @@ This is a VR music game. Players will take on the role of a "Bard" who commands 
 
 ## 分工
 * *游戏基础框架和故事背景*: Audrey Wong, Cathy Jiao, Elaine Yang, Liz Sun, Maksim Grujic
-* *codes*: Neegia、若水、Chris、Nathan；Maksim（以及离开了，但写了一部分代码和游戏背景框架）
+* *codes*: Neegia、若水、Chris、Nathan；Maksim（已经离开了，但写了一部分代码和游戏背景框架）
 * *美术*: 
    - 角色设计： Liz、Audrey
    - icons：Yuhan、Elaine、Liz
