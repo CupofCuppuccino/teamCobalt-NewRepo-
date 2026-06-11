@@ -15,7 +15,7 @@ This is a VR music game. Players will take on the role of a "Bard" who commands 
 * Unity 2022.3.62f3
 
 ## ddl
-* ddl 是 6/22 前。但我的设想是在 6/17 前基本上完成大部分，后面 6/17-6/22 这 5 天就是反复调试，6/22-6/23 这两天布展。
+ddl 是 6/22 前。但我的设想是在 6/17 前基本上完成大部分，后面 6/17-6/22 这 5 天就是反复调试，6/22-6/23 这两天布展。
 
 ## 分工
 * *游戏基础框架和故事背景*: Audrey Wong, Cathy Jiao, Elaine Yang, Liz Sun, Maksim Grujic
