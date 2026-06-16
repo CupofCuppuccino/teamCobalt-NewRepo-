@@ -3,34 +3,33 @@ using UnityEngine;
 
 public class GuitarInputHandler : MonoBehaviour
 {
-    [Header("扫弦检测范围")]
-    public float captureRange = 5f;
-    
-    [Header("风刃特效")]
-    public GameObject windBladePrefab;
-    public Transform bladeSpawnPoint;
+    [Header("扫弦设置")]
+    public float captureRange = 2f;
     
     [Header("弦颜色映射")]
     public Color chord1Color = Color.yellow;
     public Color chord2Color = Color.green;
-    public Color chord3Color = Color.blue;
+    public Color chord3Color = new Color(0.5f, 0.2f, 1f);
+    
+    private NoteSpawner noteSpawner;
     
     void Start()
     {
-        // 使用静态事件订阅
+        noteSpawner = FindObjectOfType<NoteSpawner>();
         KeyboardGuitarSimulator.OnStringPlayedStatic += OnGuitarInput;
+        
+        if (noteSpawner != null)
+        {
+            noteSpawner.OnNoteCaptured += OnNoteCaptured;
+            noteSpawner.OnNoteMissed += OnNoteMissed;
+        }
     }
     
     void OnGuitarInput(int chordId)
     {
-        Debug.Log($"吉他输入收到: 弦 {chordId}");
-        
-        // 1. 发射风刃特效
-        SpawnWindBlade(chordId);
-        
-        // 2. 检测范围内的粒子并捕获
+        Debug.Log($"扫弦！弦 {chordId}");
         Color targetColor = GetColorFromChord(chordId);
-        CaptureParticlesInRange(targetColor);
+        CaptureNotesInRange(targetColor);
     }
     
     Color GetColorFromChord(int chordId)
@@ -44,58 +43,62 @@ public class GuitarInputHandler : MonoBehaviour
         }
     }
     
-    void SpawnWindBlade(int chordId)
+    void CaptureNotesInRange(Color targetColor)
     {
-        if (windBladePrefab != null && bladeSpawnPoint != null)
-        {
-            GameObject blade = Instantiate(windBladePrefab, bladeSpawnPoint.position, Quaternion.identity);
-            // 风刃向前飞行
-            Rigidbody rb = blade.GetComponent<Rigidbody>();
-            if (rb != null)
-                rb.AddForce(transform.forward * 20f, ForceMode.Impulse);
-            
-            // 设置颜色
-            Renderer renderer = blade.GetComponent<Renderer>();
-            if (renderer != null)
-                renderer.material.color = GetColorFromChord(chordId);
-            
-            Destroy(blade, 1f);
-        }
-    }
-    
-    void CaptureParticlesInRange(Color targetColor)
-    {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, captureRange);
+        Vector3 judgePos = noteSpawner != null ? 
+            noteSpawner.transform.position + Vector3.forward * 0.5f : 
+            transform.position + Vector3.forward * 0.5f;
+        
+        Collider[] hitColliders = Physics.OverlapSphere(judgePos, captureRange);
         
         foreach (var hit in hitColliders)
         {
-            ParticleMovement particle = hit.GetComponent<ParticleMovement>();
-            if (particle != null)
+            Note note = hit.GetComponent<Note>();
+            if (note != null)
             {
-                if (IsColorMatch(hit.gameObject, targetColor))
+                Renderer renderer = hit.GetComponent<Renderer>();
+                if (renderer != null)
                 {
-                    particle.Capture();
+                    Color noteColor = renderer.material.color;
+                    if (IsColorMatch(noteColor, targetColor))
+                    {
+                        note.Capture();
+                    }
                 }
             }
         }
     }
     
-    bool IsColorMatch(GameObject obj, Color targetColor)
+    bool IsColorMatch(Color a, Color b)
     {
-        Renderer renderer = obj.GetComponent<Renderer>();
-        if (renderer != null)
+        return Mathf.Abs(a.r - b.r) < 0.2f &&
+               Mathf.Abs(a.g - b.g) < 0.2f &&
+               Mathf.Abs(a.b - b.b) < 0.2f;
+    }
+    
+    void OnNoteCaptured(NoteData data)
+    {
+        ScoreManager scoreManager = FindObjectOfType<ScoreManager>();
+        if (scoreManager != null)
         {
-            Color objColor = renderer.material.color;
-            return Mathf.Abs(objColor.r - targetColor.r) < 0.1f &&
-                   Mathf.Abs(objColor.g - targetColor.g) < 0.1f &&
-                   Mathf.Abs(objColor.b - targetColor.b) < 0.1f;
+            int scoreValue = data.color == "Yellow" ? 100 : data.color == "Green" ? 50 : 30;
+            scoreManager.AddScore(data.color, scoreValue);
+            Debug.Log($"[命中] {data.color} +{scoreValue}分");
         }
-        return false;
+    }
+    
+    void OnNoteMissed(NoteData data)
+    {
+        Debug.Log($"[Miss] {data.color} 音符");
     }
     
     void OnDestroy()
     {
-        // 取消订阅
         KeyboardGuitarSimulator.OnStringPlayedStatic -= OnGuitarInput;
+        if (noteSpawner != null)
+        {
+            noteSpawner.OnNoteCaptured -= OnNoteCaptured;
+            noteSpawner.OnNoteMissed -= OnNoteMissed;
+        }
     }
 }
