@@ -15,8 +15,8 @@ public class DebrisSpawner : MonoBehaviour
     
     [Header("跟随玩家")]
     public Transform playerTransform;
-    public bool followPlayer = true;
-    
+    public bool followPlayer = false;
+
     private List<GameObject> debrisList = new List<GameObject>();
     private Vector3 lastPlayerPosition;
     private bool hasSpawned = false;
@@ -121,20 +121,6 @@ public class DebrisSpawner : MonoBehaviour
         {
             Debug.Log("陨石数量不足，重新生成");
             SpawnDebris();
-        }
-        
-        if (followPlayer && playerTransform != null)
-        {
-            Vector3 delta = playerTransform.position - lastPlayerPosition;
-            if (delta.magnitude > 0.01f)
-            {
-                foreach (var debris in debrisList)
-                {
-                    if (debris != null)
-                        debris.transform.position += delta;
-                }
-                lastPlayerPosition = playerTransform.position;
-            }
         }
     }
     

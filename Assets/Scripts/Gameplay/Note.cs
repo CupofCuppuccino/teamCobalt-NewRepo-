@@ -136,9 +136,6 @@ public class Note : MonoBehaviour
     }
 
 
-
-
-
     void UpdateReadyGlow()
     {
         if (IsInHitRange() && !glowing)
@@ -146,35 +143,54 @@ public class Note : MonoBehaviour
             glowing = true;
             SetGlow(readyGlow);
         }
-        else if (!IsInHitRange() && !glowing) // ★ 只有当之前没有发光时才恢复正常发光
+        else if (!IsInHitRange() && glowing)
         {
             glowing = false;
             SetGlow(normalGlow);
         }
     }
 
-
-
-
-
     public void Capture()
     {
-        if (!isActive) return;
-        
+        if (!isActive)
+            return;
+
+
         isActive = false;
         isCaptured = true;
-        
-        // ★ 触发事件（GuitarInputHandler 会通过 NoteSpawner 接收到）
+
+
+        if (data != null)
+        {
+            string colorName = data.color;
+
+
+            if (ScoreManager.Instance != null)
+            {
+                ScoreManager.Instance.AddScore(
+                    colorName,
+                    scoreValue
+                );
+            }
+            else
+            {
+                Debug.LogWarning(
+                    "ScoreManager 不存在"
+                );
+            }
+        }
+
+
+        // 保留事件，给以后扩展
         OnCaptured?.Invoke(data);
-        
+
+
+
         PlayEffect(hitEffectPrefab);
+
+
         Destroy(gameObject);
     }
-
-
-
-
-
 
     public bool IsActive()
     {

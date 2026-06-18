@@ -219,6 +219,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1
+--- !u!1 &62765028
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 62765029}
+  m_Layer: 0
+  m_Name: NoteWorldCenter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &62765029
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 62765028}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &91061054
 GameObject:
   m_ObjectHideFlags: 0
@@ -739,11 +770,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!1 &362556358 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1810694187548873690, guid: c94e767efb55a4c40b5493c023fef28c, type: 3}
-  m_PrefabInstance: {fileID: 389588132}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &389588132
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1313,6 +1339,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 525936687}
   m_CullTransparentMesh: 1
+--- !u!1 &555750279
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 555750280}
+  - component: {fileID: 555750282}
+  - component: {fileID: 555750283}
+  m_Layer: 0
+  m_Name: GuitarInput
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &555750280
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555750279}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.2252487, y: 4.8887606, z: -3.6737614}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &555750282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555750279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5f6f3aec55dc946ab2055de535ef6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &555750283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555750279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ab31cf1c79ba994b9864d4dc43dd8df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &565227511
 GameObject:
   m_ObjectHideFlags: 0
@@ -1598,7 +1681,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &802555867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3266,8 +3349,6 @@ GameObject:
   - component: {fileID: 1599778668}
   - component: {fileID: 1599778667}
   - component: {fileID: 1599778669}
-  - component: {fileID: 1599778670}
-  - component: {fileID: 1599778671}
   m_Layer: 0
   m_Name: 'GameManager '
   m_TagString: Untagged
@@ -3294,6 +3375,7 @@ MonoBehaviour:
   spawnDistanceZ: 30
   spawnRadiusX: 4
   spawnRadiusY: 2
+  noteWorldCenter: {fileID: 62765029}
   judgeLine: {fileID: 1776235132}
   moveSpeed: 5
   leadTime: 3
@@ -3408,38 +3490,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1599778670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1599778666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77fd408ca49979c4da1dd4044202f7c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  captureRange: 2
-  chord1Color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  chord2Color: {r: 0, g: 1, b: 0, a: 1}
-  chord3Color: {r: 0.5, g: 0.2, b: 1, a: 1}
---- !u!114 &1599778671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1599778666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35675a5999d46714c95606eff98386d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  deviceName: teamCobalt
-  reconnectInterval: 2
-  debugMode: 1
-  lastReceivedData: 
 --- !u!1 &1607776002
 GameObject:
   m_ObjectHideFlags: 0
@@ -4380,7 +4430,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1975309221
 Transform:
   m_ObjectHideFlags: 0
@@ -4410,12 +4460,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mySingularityManager: {fileID: 802555867}
   DeviceName: teamCobalt
-  UIInterfacePanel: {fileID: 362556358}
-  _debugText: {fileID: 1834694911}
-  environment: {fileID: 0}
-  objectToHide: {fileID: 0}
-  spaceshipStatusController: {fileID: 0}
-  touch: 0
 --- !u!1 &2052933061
 GameObject:
   m_ObjectHideFlags: 0
@@ -4919,3 +4963,5 @@ SceneRoots:
   - {fileID: 1732227341}
   - {fileID: 497112008}
   - {fileID: 1370000373}
+  - {fileID: 62765029}
+  - {fileID: 555750280}

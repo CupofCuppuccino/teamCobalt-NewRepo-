@@ -34,6 +34,10 @@ int lastS1Reading = HIGH;
 int lastS2Reading = HIGH;
 int lastS3Reading = HIGH;
 
+int oldS1State = HIGH;
+int oldS2State = HIGH;
+int oldS3State = HIGH;
+
 unsigned long S1DebounceTime = 0;
 unsigned long S2DebounceTime = 0;
 unsigned long S3DebounceTime = 0;
@@ -200,6 +204,22 @@ void loop() {
       digitalWrite(led3Pin, LOW);
   }
 
-  Serial.println(String(S1State) + "," + String(S2State) + "," + String(S3State));    //print guitar string pin's state on Serial
-  BTSerial.println(String(S1State) + "," + String(S2State) + "," + String(S3State));    //send the guitar string pin's state to Bluetooth, so Unity can receive it
+  if (
+    S1State != oldS1State ||
+    S2State != oldS2State ||
+    S3State != oldS3State
+)
+{
+    String msg =
+        String(S1State) + "," +
+        String(S2State) + "," +
+        String(S3State);
+
+    Serial.println(msg);
+    BTSerial.println(msg);
+
+    oldS1State = S1State;
+    oldS2State = S2State;
+    oldS3State = S3State;
+}
 }

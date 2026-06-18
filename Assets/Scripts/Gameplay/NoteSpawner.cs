@@ -16,7 +16,10 @@ public class NoteSpawner : MonoBehaviour
     public float spawnDistanceZ = 25f;
     public float spawnRadiusX = 3f;
     public float spawnRadiusY = 2f;
-    
+
+    [Header("世界中心")]
+    public Transform noteWorldCenter;
+
     [Header("判定线设置")]
     public Transform judgeLine;
     
@@ -249,15 +252,18 @@ public class NoteSpawner : MonoBehaviour
         }
         renderer.material.color = targetColor;
     }
-    
+
     Vector3 GetJudgeLinePosition(float x, float y)
     {
-        if (judgeLine != null)
-            return judgeLine.position + new Vector3(x, y, 0);
-        else
-            return new Vector3(x, y, 0.5f);
+        if (noteWorldCenter != null)
+        {
+            return noteWorldCenter.position +
+                   new Vector3(x, y, 0);
+        }
+
+        return new Vector3(x, y, 10f);
     }
-    
+
     void HandleNoteCaptured(NoteData data)
     {
         OnNoteCaptured?.Invoke(data);
