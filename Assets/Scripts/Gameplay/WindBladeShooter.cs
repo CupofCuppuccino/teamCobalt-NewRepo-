@@ -10,15 +10,13 @@ public class WindBladeShooter : MonoBehaviour
 
     private void OnEnable()
     {
-        KeyboardGuitarSimulator.OnStringPlayedStatic += Shoot;
-        GuitarBluetoothInput.OnStringPlayed += Shoot;
+        GuitarInputManager.OnStringPlayed += Shoot;
     }
 
 
     private void OnDisable()
     {
-        KeyboardGuitarSimulator.OnStringPlayedStatic -= Shoot;
-        GuitarBluetoothInput.OnStringPlayed -= Shoot;
+        GuitarInputManager.OnStringPlayed -= Shoot;
     }
 
     void Shoot(int id)
