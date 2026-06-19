@@ -19,6 +19,9 @@ public class GameIntroFlowController : MonoBehaviour
 
     void Start()
     {
+        if (dialogueManager != null)
+            dialogueManager.panel?.SetActive(false);
+
         state = State.Video;
         StartCoroutine(Run());
     }
@@ -60,6 +63,11 @@ public class GameIntroFlowController : MonoBehaviour
     void StartVideo()
     {
         state = State.Video;
+
+        if (dialogueManager != null)
+        {
+            dialogueManager.panel?.SetActive(false);
+        }
 
         if (videoPlayer != null)
             videoPlayer.Play();
