@@ -309,7 +309,7 @@ public class NoteSpawner : MonoBehaviour
                    new Vector3(x, y, 0);
         }
 
-        return new Vector3(x, y, 10f);
+        return new Vector3(x, y, 15f);
     }
 
     void HandleNoteCaptured(NoteData data)
