@@ -11,7 +11,7 @@ public class GuitarBluetoothInput : MonoBehaviour
     [Header("USB 串口设置")]
     public bool useUSBSerial = true;              // 改成 true 使用 USB 串口
     public string portName = "COM3";              // Windows 用 COM3，Mac 用 /dev/tty.usbmodemxxx
-    public int baudRate = 115200;
+    public int baudRate = 9600;
 
     private SerialPort serialPort;
     private int lastS1 = 1;
@@ -20,6 +20,7 @@ public class GuitarBluetoothInput : MonoBehaviour
 
     void Awake()
     {
+        Debug.Log("🔵 GuitarBluetoothInput.Awake() 被调用");
         if (Instance != null)
         {
             Destroy(gameObject);
@@ -31,6 +32,7 @@ public class GuitarBluetoothInput : MonoBehaviour
 
     void Start()
     {
+        Debug.Log($"🟢 GuitarBluetoothInput.Start() 被调用, useUSBSerial={useUSBSerial}");
         if (useUSBSerial)
         {
             try

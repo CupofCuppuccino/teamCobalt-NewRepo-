@@ -1486,6 +1486,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db5f6f3aec55dc946ab2055de535ef6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useUSBSerial: 1
+  portName: COM3
+  baudRate: 9600
 --- !u!114 &555750283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2700,9 +2703,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beatmapFile: {fileID: 0}
-  yellowNotePrefab: {fileID: 809034063130156681, guid: f881b5c8d5443444da55ec1da70a74ca, type: 3}
-  greenNotePrefab: {fileID: 7318227769529052288, guid: ed124e7d717c3be448a02b7f5f810321, type: 3}
-  bluePurpleNotePrefab: {fileID: 6503413635788936976, guid: 3461f24b206d6a64ab5a077fc8bca967, type: 3}
+  yellowNotePrefab: {fileID: 4837421716345730629, guid: b53e2034885deaf4d90095ac29980ca6, type: 3}
+  greenNotePrefab: {fileID: 1182736512930160983, guid: 7eb76ec9d98879b4b9bf6df99dae22e8, type: 3}
+  bluePurpleNotePrefab: {fileID: 5295714927830957825, guid: a3ce0c7bab3b4f94f9f85d542302a8e7, type: 3}
   spawnDistanceZ: 30
   spawnRadiusX: 4
   spawnRadiusY: 2
