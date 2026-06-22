@@ -2700,9 +2700,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beatmapFile: {fileID: 0}
-  yellowNotePrefab: {fileID: 2268275969781183772, guid: 030710e1587d0fd478cd9c6d8af7983f, type: 3}
-  greenNotePrefab: {fileID: 7696996501298223895, guid: f05bbcbd6b520c140a6a0c861b1180ed, type: 3}
-  bluePurpleNotePrefab: {fileID: 3575073324913079332, guid: 88aadb0df24014f448d8880fd77c0489, type: 3}
+  yellowNotePrefab: {fileID: 809034063130156681, guid: f881b5c8d5443444da55ec1da70a74ca, type: 3}
+  greenNotePrefab: {fileID: 7318227769529052288, guid: ed124e7d717c3be448a02b7f5f810321, type: 3}
+  bluePurpleNotePrefab: {fileID: 6503413635788936976, guid: 3461f24b206d6a64ab5a077fc8bca967, type: 3}
   spawnDistanceZ: 30
   spawnRadiusX: 4
   spawnRadiusY: 2
