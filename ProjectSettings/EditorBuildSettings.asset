@@ -25,7 +25,7 @@ EditorBuildSettings:
     guid: 55daccc09a3b69647bbab145b54a3ab3
   - enabled: 1
     path: Assets/Scenes/EndingScene.unity
-    guid: 472ee803b51da7243a9d70b6098869ce
+    guid: 2b4fd8a71700819439e676bfbfb8f221
   - enabled: 1
     path: Assets/Scenes/TransitionScene.unity
     guid: 5e3fe46200ac2db4cabe637d5c5a9c4a
