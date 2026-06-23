@@ -1046,7 +1046,7 @@ GameObject:
   - component: {fileID: 1420423886}
   - component: {fileID: 1420423885}
   m_Layer: 0
-  m_Name: GameIntroFlow
+  m_Name: GameEndingFlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1839,7 +1839,7 @@ GameObject:
   - component: {fileID: 2042232702}
   - component: {fileID: 2042232701}
   m_Layer: 0
-  m_Name: IntroVideoPlayer
+  m_Name: EndVideoPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
