@@ -1327,7 +1327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db5f6f3aec55dc946ab2055de535ef6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useUSBSerial: 1
+  useUSBSerial: 0
   portName: COM3
   baudRate: 9600
 --- !u!114 &555750283
@@ -2209,7 +2209,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3bc99b2fe943d7c41bab3e82f8336769, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -473.97025
+      value: -472.84
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3bc99b2fe943d7c41bab3e82f8336769, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3011,7 +3011,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 1334074686}
-  m_PlaneDistance: 10
+  m_PlaneDistance: 15
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0

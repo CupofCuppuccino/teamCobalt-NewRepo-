@@ -526,7 +526,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db5f6f3aec55dc946ab2055de535ef6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useUSBSerial: 1
+  useUSBSerial: 0
   portName: COM3
   baudRate: 9600
 --- !u!4 &354568536
