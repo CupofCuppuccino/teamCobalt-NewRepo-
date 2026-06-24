@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using UnityEngine.InputSystem;
 
 public class GuitarInputManager : MonoBehaviour
 {
@@ -10,7 +12,7 @@ public class GuitarInputManager : MonoBehaviour
     public string mainSceneName = "MainScene";
     public string endingSceneName = "EndingScene";
     public string transitionSceneName = "TransitionScene";
-    public string titleSceneName = "TitleScene";
+    public string titleSceneName = "TitleScreen";
 
     private bool skipTriggered = false;  // ★ 添加
 
@@ -21,37 +23,59 @@ public class GuitarInputManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        KeyboardGuitarSimulator.OnStringPlayedStatic += OnStringPlayed;
-        GuitarBluetoothInput.OnStringPlayed += OnStringPlayed;
+
+        StartCoroutine(RegisterInput());
+    }
+
+
+    IEnumerator RegisterInput()
+    {
+        yield return null;
+
+
+        KeyboardGuitarSimulator.OnStringPlayedStatic
+            += OnStringPlayed;
+
+
+        GuitarBluetoothInput.OnStringPlayed
+            += OnStringPlayed;
+
+
+        Debug.Log(
+            "GuitarInputManager 输入注册完成"
+        );
     }
 
     void Update()
     {
-        string currentScene = SceneManager.GetActiveScene().name;
+        string currentScene =
+            SceneManager.GetActiveScene().name;
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) OnStringPlayed?.Invoke(1);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) OnStringPlayed?.Invoke(2);
-        if (Input.GetKeyDown(KeyCode.Alpha3)) OnStringPlayed?.Invoke(3);
 
-        if (Input.GetKeyDown(KeyCode.Alpha4) && currentScene == mainSceneName)
+        if (Keyboard.current != null)
         {
-            Debug.Log($"⏭️ 按 4：{currentScene} → {endingSceneName}");
-            SceneManager.LoadScene(endingSceneName);
-        }
+            if (Keyboard.current.digit1Key.wasPressedThisFrame)
+                OnStringPlayed?.Invoke(1);
 
-        if (Input.GetKeyDown(KeyCode.Alpha1) && currentScene == endingSceneName)
-        {
-            Debug.Log($"⏭️ 按 1：{currentScene} → {transitionSceneName}");
-            SceneManager.LoadScene(transitionSceneName);
-        }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1) && currentScene == transitionSceneName)
-        {
-            Debug.Log($"⏭️ 按 1：{currentScene} → {titleSceneName}");
-            SceneManager.LoadScene(titleSceneName);
+            if (Keyboard.current.digit2Key.wasPressedThisFrame)
+                OnStringPlayed?.Invoke(2);
+
+
+            if (Keyboard.current.digit3Key.wasPressedThisFrame)
+                OnStringPlayed?.Invoke(3);
+
+
+            if (Keyboard.current.digit4Key.wasPressedThisFrame
+                && currentScene == mainSceneName)
+            {
+                SceneManager.LoadScene(endingSceneName);
+            }
         }
     }
 

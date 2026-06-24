@@ -7,98 +7,79 @@ using UnityEngine.Video;
 public class GameIntroFlowController : MonoBehaviour
 {
     public string nextScene = "MainScene";
+
     public AudioSource dialogueBGM;
+
     public RawImage introVideoImage;
+
     public VideoPlayer videoPlayer;
+
     public DialogueManager dialogueManager;
 
-    private enum State { Video, Dialogue, End }
-    private State state;
-    private bool isInitialized = false;
-    private bool inputLocked = true;
-    
-    // ★ 新增：防止重复触发
-    private bool isHandlingPrimary = false;
-
-    void Awake()
+    private enum State
     {
-        Debug.Log($"[DEBUG-AWAKE] GameIntroFlowController 实例唤醒");
-        SceneManager.sceneLoaded += OnSceneLoaded;
-        SceneManager.sceneUnloaded += OnSceneUnloaded;
-
-        inputLocked = true;
-        state = State.Video;
-        isInitialized = false;
-        isHandlingPrimary = false;
+        Video,
+        Dialogue,
+        End
     }
+
+    private State state;
+
+    private bool initialized;
+
+    private bool inputLocked = true;
+
+    void OnEnable()
+    {
+        GuitarInputManager.OnStringPlayed -= OnGuitarInput;
+        GuitarInputManager.OnStringPlayed += OnGuitarInput;
+
+        Debug.Log("Intro 已监听吉他输入");
+    }
+
 
     void Start()
     {
-        Scene current = SceneManager.GetActiveScene();
-        Debug.Log($"[DEBUG-START] 当前场景：{current.name}");
-    }
-
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        Debug.Log($"[DEBUG-OnSceneLoaded] 加载场景：{scene.name}");
-        if (scene.name == "TitleScreen")
-        {
-            isInitialized = false;
-            state = State.Video;
-            inputLocked = true;
-            isHandlingPrimary = false;
-            StartCoroutine(DelayedInitialize());
-        }
+        StartCoroutine(DelayedInitialize());
     }
 
     IEnumerator DelayedInitialize()
     {
         yield return null;
         yield return null;
-        InitializeTitleScreen();
+
+        Initialize();
     }
 
-    void OnEnable()
-    {
-        GuitarInputManager.OnStringPlayed -= OnGuitarInput;
-        GuitarInputManager.OnStringPlayed += OnGuitarInput;
-        Debug.Log("[DEBUG-ENABLE] 吉他输入事件已绑定");
-    }
-
-    void OnSceneUnloaded(Scene scene)
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name == "TitleScreen")
         {
-            isInitialized = false;
-            inputLocked = true;
-            isHandlingPrimary = false;
-            StopAllCoroutines();
-            state = State.Video;
-            if (dialogueBGM != null) dialogueBGM.Stop();
+            initialized = false;
+
+            StartCoroutine(DelayedInitialize());
         }
     }
 
-    void InitializeTitleScreen()
+    void Initialize()
     {
-        if (isInitialized)
-        {
-            dialogueManager = FindObjectOfType<DialogueManager>(true);
-            if (dialogueManager != null) dialogueManager.ResetState();
+        if (initialized)
             return;
-        }
 
-        Debug.Log("🎬 ★★★ 初始化 TitleScreen ★★★");
-        isInitialized = true;
+        initialized = true;
 
         dialogueManager = FindObjectOfType<DialogueManager>(true);
+
         if (dialogueManager == null)
         {
-            Debug.LogError("[DEBUG-FATAL] 未找到 DialogueManager");
+            Debug.LogError("没有找到 DialogueManager");
             return;
         }
 
         dialogueManager.ResetState();
+
         dialogueManager.panel?.SetActive(false);
+
         dialogueManager.gameObject.SetActive(true);
 
         if (videoPlayer != null)
@@ -106,158 +87,142 @@ public class GameIntroFlowController : MonoBehaviour
             videoPlayer.Stop();
             videoPlayer.time = 0;
         }
-        if (introVideoImage != null) introVideoImage.enabled = false;
+
+        if (introVideoImage != null)
+            introVideoImage.enabled = false;
 
         state = State.Video;
-        StartCoroutine(Run());
-
-        if (GuitarInputManager.Instance != null)
-        {
-            GuitarInputManager.Instance.ResetSkip();
-        }
 
         inputLocked = false;
-        Debug.Log("[DEBUG-INPUTLOCK] 吉他输入已解锁");
-    }
 
-    void OnDisable()
-    {
-        GuitarInputManager.OnStringPlayed -= OnGuitarInput;
-        StopAllCoroutines();
-    }
+        StartCoroutine(Run());
 
-    void OnDestroy()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-        SceneManager.sceneUnloaded -= OnSceneUnloaded;
-        StopAllCoroutines();
-    }
-
-    void OnGuitarInput(int stringId)
-    {
-        if (inputLocked)
-        {
-            Debug.Log($"[DEBUG-INPUTLOCK] 丢弃按键：弦{stringId}");
-            return;
-        }
-
-        Debug.Log($"[DEBUG-INPUT] 收到弦{stringId}，状态:{state}");
-        if (state != State.Video && state != State.Dialogue) return;
-
-        if (stringId == 1)
-        {
-            // ★ 防止重复触发
-            if (!isHandlingPrimary)
-            {
-                isHandlingPrimary = true;
-                HandlePrimary();
-                // 延迟重置，防止同一帧内多次触发
-                StartCoroutine(ResetHandleFlag());
-            }
-        }
-
-        if (state == State.Dialogue && stringId == 2)
-        {
-            dialogueManager?.NextManual();
-        }
-    }
-
-    IEnumerator ResetHandleFlag()
-    {
-        yield return new WaitForEndOfFrame();
-        isHandlingPrimary = false;
+        Debug.Log("Intro 初始化完成");
     }
 
     IEnumerator Run()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1);
+
         StartVideo();
     }
 
     void StartVideo()
     {
         state = State.Video;
-        if (introVideoImage != null) introVideoImage.enabled = true;
-        if (dialogueManager != null) dialogueManager.panel?.SetActive(false);
-        if (videoPlayer != null) videoPlayer.Play();
+
+        inputLocked = false;
+
+        if (introVideoImage != null)
+            introVideoImage.enabled = true;
+
+        dialogueManager.panel?.SetActive(false);
+
+        videoPlayer?.Play();
+
         StartCoroutine(VideoAutoEnd());
-        Debug.Log("[DEBUG-VIDEO] 视频开始播放");
+
+        Debug.Log("视频开始");
     }
 
     IEnumerator VideoAutoEnd()
     {
-        yield return new WaitForSeconds(48f);
-        if (state != State.Video) yield break;
-        Debug.Log("[DEBUG-VIDEO] 视频超时结束");
-        EndVideoToDialogue();
+        yield return new WaitForSeconds(48);
+
+        if (state == State.Video)
+            EndVideoToDialogue();
+    }
+
+    void OnGuitarInput(int id)
+    {
+        Debug.Log(
+            "Intro收到弦:{id} 状态:{state}"
+        );
+
+
+        if (state == State.End)
+            return;
+
+
+        if (id == 1)
+        {
+            if (state == State.Video)
+            {
+                Debug.Log("吉他跳过视频");
+                EndVideoToDialogue();
+            }
+            else if (state == State.Dialogue)
+            {
+                Debug.Log("吉他跳过对话");
+                EndFlow();
+            }
+        }
+
+
+        if (id == 2 && state == State.Dialogue)
+        {
+            dialogueManager?.NextManual();
+        }
     }
 
     void EndVideoToDialogue()
     {
-        if (state != State.Video) return;
-        if (videoPlayer != null) videoPlayer.Stop();
-        if (introVideoImage != null) introVideoImage.enabled = false;
-        Debug.Log("[DEBUG-SKIP] 视频停止，启动对话");
+        if (state != State.Video)
+            return;
+
+        state = State.Dialogue;
+
+        StartCoroutine(SwitchToDialogue());
+    }
+
+    IEnumerator SwitchToDialogue()
+    {
+        if (videoPlayer != null)
+        {
+            videoPlayer.Pause();
+        }
+
+        yield return new WaitForEndOfFrame();
+
+        if (introVideoImage != null)
+            introVideoImage.enabled = false;
+
         StartDialogue();
     }
 
     void StartDialogue()
     {
         state = State.Dialogue;
-        StartCoroutine(FadeInBGM());
-        if (dialogueManager != null)
-        {
-            dialogueManager.gameObject.SetActive(true);
-            dialogueManager.Begin(this);
-        }
-    }
 
-    IEnumerator FadeInBGM()
-    {
-        if (dialogueBGM == null) yield break;
-        dialogueBGM.volume = 0;
-        dialogueBGM.Play();
-        float t = 0;
-        while (t < 2f)
+        if (dialogueBGM != null)
         {
-            t += Time.deltaTime;
-            dialogueBGM.volume = Mathf.Lerp(0, 0.5f, t / 2f);
-            yield return null;
+            dialogueBGM.volume = 0;
+            dialogueBGM.Play();
         }
-    }
 
-    void HandlePrimary()
-    {
-        Debug.Log($"[DEBUG-HANDLE] 当前状态:{state}");
-        if (state == State.Video)
-        {
-            // ★ 按 1 跳过视频 → 直接进入对话
-            videoPlayer?.Stop();
-            EndVideoToDialogue();
-        }
-        else if (state == State.Dialogue)
-        {
-            // ★ 按 1 跳过对话 → 进入 MainScene
-            Debug.Log("[DEBUG-HANDLE] 跳过对话，进入 MainScene");
-            EndFlow();
-        }
+        dialogueManager?.Begin(this);
     }
 
     public void OnDialogueFinished()
     {
-        Debug.Log("[DEBUG-DIALOGUE-END] 对话结束，跳转场景");
         EndFlow();
     }
 
     void EndFlow()
     {
         state = State.End;
-        if (dialogueBGM != null) dialogueBGM.Stop();
-        if (dialogueManager != null)
-        {
-            dialogueManager.panel?.SetActive(false);
-            dialogueManager.gameObject.SetActive(false);
-        }
+
+        dialogueBGM?.Stop();
+
+        dialogueManager?.gameObject.SetActive(false);
+
         SceneManager.LoadScene(nextScene);
+    }
+
+    void OnDestroy()
+    {
+        GuitarInputManager.OnStringPlayed -= OnGuitarInput;
+
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }

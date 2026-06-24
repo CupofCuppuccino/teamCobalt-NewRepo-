@@ -16,15 +16,24 @@ public class ExampleCommunicator : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("ExampleCommunicator Start");
+
 
         var devices =
-            mySingularityManager.GetPairedDevices();
+        mySingularityManager.GetPairedDevices();
+
+
+        Debug.Log(
+        "Paired devices:"
+        + devices.Count
+        );
 
 
         foreach (var device in devices)
         {
             Debug.Log(
-                "Found device: " + device.name
+            "DEVICE:"
+            + device.name
             );
 
 
@@ -32,8 +41,15 @@ public class ExampleCommunicator : MonoBehaviour
             {
                 myDevice = device;
 
+
                 mySingularityManager
-                    .ConnectToDevice(myDevice);
+                .ConnectToDevice(myDevice);
+
+
+                Debug.Log(
+                "Trying connect ESP32"
+                );
+
 
                 return;
             }
@@ -41,7 +57,7 @@ public class ExampleCommunicator : MonoBehaviour
 
 
         Debug.LogError(
-            "ESP32 not found"
+        "ESP32 not found"
         );
     }
 
@@ -56,24 +72,20 @@ public class ExampleCommunicator : MonoBehaviour
 
     public void onMessageRecieved(string message)
     {
+        Debug.Log(
+        "ESP32 RAW:"
+        + message
+        );
+
 
         message = message.Trim();
 
 
-        Debug.Log(
-            "ESP32 => " + message
-        );
-
-
         if (message.Contains(","))
         {
-            if (GuitarBluetoothInput.Instance != null)
-            {
-                GuitarBluetoothInput.Instance
-                    .ParseMessage(message);
-            }
+            GuitarBluetoothInput.Instance
+            ?.ParseMessage(message);
         }
-
     }
 
 
