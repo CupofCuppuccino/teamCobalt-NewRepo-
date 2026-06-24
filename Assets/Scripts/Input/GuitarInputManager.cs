@@ -6,11 +6,13 @@ public class GuitarInputManager : MonoBehaviour
     public static GuitarInputManager Instance;
     public static event System.Action<int> OnStringPlayed;
 
-    [Header("MainScene 快速跳转")]
+    [Header("场景名称")]
     public string mainSceneName = "MainScene";
-    public string skipSceneName = "EndingScene";
+    public string endingSceneName = "EndingScene";
+    public string transitionSceneName = "TransitionScene";
+    public string titleSceneName = "TitleScene";
 
-    private bool skipTriggered = false;
+    private bool skipTriggered = false;  // ★ 添加
 
     void Awake()
     {
@@ -22,64 +24,47 @@ public class GuitarInputManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // ★ 订阅输入事件
-        KeyboardGuitarSimulator.OnStringPlayedStatic += HandleInput;
-        GuitarBluetoothInput.OnStringPlayed += HandleInput;
-
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        ResetSkip();
-        Debug.Log($"[GuitarInputManager] 场景加载: {scene.name}，跳过标记已重置");
+        KeyboardGuitarSimulator.OnStringPlayedStatic += OnStringPlayed;
+        GuitarBluetoothInput.OnStringPlayed += OnStringPlayed;
     }
 
     void Update()
     {
-        // ★ 键盘 4：MainScene 直接跳转到 EndingScene
-        if (Input.GetKeyDown(KeyCode.Alpha4))
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1)) OnStringPlayed?.Invoke(1);
+        if (Input.GetKeyDown(KeyCode.Alpha2)) OnStringPlayed?.Invoke(2);
+        if (Input.GetKeyDown(KeyCode.Alpha3)) OnStringPlayed?.Invoke(3);
+
+        if (Input.GetKeyDown(KeyCode.Alpha4) && currentScene == mainSceneName)
         {
-            string currentScene = SceneManager.GetActiveScene().name;
-            if (currentScene == mainSceneName)
-            {
-                Debug.Log($"[跳过] 按 4 键：{currentScene} → {skipSceneName}");
-                SceneManager.LoadScene(skipSceneName);
-            }
+            Debug.Log($"⏭️ 按 4：{currentScene} → {endingSceneName}");
+            SceneManager.LoadScene(endingSceneName);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1) && currentScene == endingSceneName)
+        {
+            Debug.Log($"⏭️ 按 1：{currentScene} → {transitionSceneName}");
+            SceneManager.LoadScene(transitionSceneName);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1) && currentScene == transitionSceneName)
+        {
+            Debug.Log($"⏭️ 按 1：{currentScene} → {titleSceneName}");
+            SceneManager.LoadScene(titleSceneName);
         }
     }
 
-    private void HandleInput(int stringId)
-    {
-        // ★ 转发给所有订阅者
-        OnStringPlayed?.Invoke(stringId);
-
-        string scene = SceneManager.GetActiveScene().name;
-
-        // ★ EndingScene: 按 1 跳过视频
-        if (scene == "EndingScene" && stringId == 1 && !skipTriggered)
-        {
-            TriggerSkip();
-        }
-    }
-
-    void TriggerSkip()
-    {
-        if (skipTriggered) return;
-        skipTriggered = true;
-        Debug.Log($"[跳过] 触发！加载 TransitionScene");
-        SceneManager.LoadScene("TransitionScene");
-    }
-
+    // ★ 添加 ResetSkip 方法
     public void ResetSkip()
     {
         skipTriggered = false;
+        Debug.Log("🔄 GuitarInputManager: 跳过标记已重置");
     }
 
     void OnDestroy()
     {
-        KeyboardGuitarSimulator.OnStringPlayedStatic -= HandleInput;
-        GuitarBluetoothInput.OnStringPlayed -= HandleInput;
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        KeyboardGuitarSimulator.OnStringPlayedStatic -= OnStringPlayed;
+        GuitarBluetoothInput.OnStringPlayed -= OnStringPlayed;
     }
 }

@@ -1044,31 +1044,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1420423886}
-  - component: {fileID: 1420423885}
+  - component: {fileID: 1420423887}
   m_Layer: 0
-  m_Name: GameIntroFlow
+  m_Name: GameEndingFlow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1420423885
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1420423884}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff5be40a6a098de4dbb6c97a87ac5d54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nextScene: MainScene
-  dialogueBGM: {fileID: 0}
-  introVideoImage: {fileID: 0}
-  videoPlayer: {fileID: 2042232701}
-  dialogueManager: {fileID: 0}
 --- !u!4 &1420423886
 Transform:
   m_ObjectHideFlags: 0
@@ -1085,6 +1068,23 @@ Transform:
   - {fileID: 2042232702}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1420423887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420423884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec5ee8176d8f93c49b7324825dc8870e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transitionSceneName: TransitionScene
+  videoPlayer: {fileID: 2042232701}
+  renderTexture: {fileID: 8400000, guid: b10d9ad16727d9d4bbbd626701256b45, type: 2}
+  videoDisplay: {fileID: 0}
+  videoDuration: 30
 --- !u!1 &1426950794
 GameObject:
   m_ObjectHideFlags: 0
@@ -1839,7 +1839,7 @@ GameObject:
   - component: {fileID: 2042232702}
   - component: {fileID: 2042232701}
   m_Layer: 0
-  m_Name: IntroVideoPlayer
+  m_Name: EndVideoPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1865,7 +1865,7 @@ VideoPlayer:
   m_AspectRatio: 3
   m_DataSource: 0
   m_TimeUpdateMode: 2
-  m_PlaybackSpeed: 1
+  m_PlaybackSpeed: 5
   m_AudioOutputMode: 2
   m_TargetAudioSources:
   - {fileID: 0}
