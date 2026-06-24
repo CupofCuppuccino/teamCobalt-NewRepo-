@@ -39,55 +39,33 @@ public class GuitarBluetoothInput : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-
         Instance = this;
-
-        DontDestroyOnLoad(gameObject);
-
-
-        Debug.Log(
-        "GuitarBluetoothInput Awake");
+        DontDestroyOnLoad(gameObject);  // ★ 跨场景存活
+        Debug.Log("GuitarBluetoothInput Awake");
     }
 
 
 
     void Start()
     {
-
-        if (!useUSBSerial)
+        Debug.Log($"GuitarBluetoothInput Start, useUSBSerial={useUSBSerial}, portName={portName}");
+        
+        if (useUSBSerial)
         {
-            Debug.Log(
-            "Using Android Bluetooth");
-            return;
+            try
+            {
+                serialPort = new SerialPort(portName, baudRate);
+                serialPort.DtrEnable = true;
+                serialPort.RtsEnable = true;
+                serialPort.ReadTimeout = 20;
+                serialPort.Open();
+                Debug.Log($"✅ USB 串口已打开: {portName}");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"❌ 打开串口失败: {e.Message}");
+            }
         }
-
-
-
-        try
-        {
-            serialPort =
-            new SerialPort(
-            portName,
-            baudRate);
-
-
-            serialPort.ReadTimeout = 50;
-
-
-            serialPort.Open();
-
-
-            Debug.Log(
-            "Serial Connected");
-
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(
-            e.Message);
-        }
-
     }
 
 

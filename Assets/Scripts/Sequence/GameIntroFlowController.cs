@@ -127,10 +127,27 @@ public class GameIntroFlowController : MonoBehaviour
 
     IEnumerator VideoAutoEnd()
     {
-        yield return new WaitForSeconds(48);
+        // ★ 先等待视频真正开始播放
+        yield return new WaitForSeconds(0.5f);
+        
+        if (videoPlayer != null && videoPlayer.clip != null)
+        {
+            // ★ 如果视频没有播放，尝试播放
+            if (!videoPlayer.isPlaying)
+            {
+                videoPlayer.Play();
+                yield return new WaitForSeconds(1f);
+            }
+            
+            // 等待视频播放完成
+            while (videoPlayer.isPlaying)
+            {
+                yield return null;
+            }
+        }
 
-        if (state == State.Video)
-            EndVideoToDialogue();
+        Debug.Log("🎬 视频播放结束，切换到对话");
+        EndVideoToDialogue();
     }
 
     void OnGuitarInput(int id)

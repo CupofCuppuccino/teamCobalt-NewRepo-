@@ -63,33 +63,34 @@ public class NoteSpawner : MonoBehaviour
 
     void Update()
     {
-        if (!hasStarted)
-            return;
+        if (!hasStarted) return;
 
-
+        // ★ 优先用 musicSource.time，失败则用 gameTime
         float currentTime = 0f;
-
 
         if (musicSource != null && musicSource.isPlaying)
         {
             currentTime = musicSource.time;
+            // ★ 同步 gameTime
+            gameTime = currentTime;
         }
         else
         {
+            // ★ 如果音乐没在播放，用累加的时间
             gameTime += Time.deltaTime;
             currentTime = gameTime;
         }
 
-
+        // ★ 调试日志：每 5 秒打印一次
+        if (Time.frameCount % 300 == 0)
+        {
+            Debug.Log($"🎵 当前时间: {currentTime:F2}s, 已生成: {nextNoteIndex}/{notes.Count}");
+        }
 
         while (nextNoteIndex < notes.Count)
         {
             NoteData note = notes[nextNoteIndex];
-
-
-            float timeToArrival =
-                note.beatTime - currentTime;
-
+            float timeToArrival = note.beatTime - currentTime;
 
             if (timeToArrival <= leadTime)
             {

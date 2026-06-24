@@ -18,6 +18,11 @@ public class ExampleCommunicator : MonoBehaviour
     {
         Debug.Log("ExampleCommunicator Start");
 
+        if (mySingularityManager == null)
+        {
+            Debug.LogWarning("⚠️ mySingularityManager 为空，跳过蓝牙初始化");
+            return;
+        }
 
         var devices =
         mySingularityManager.GetPairedDevices();
