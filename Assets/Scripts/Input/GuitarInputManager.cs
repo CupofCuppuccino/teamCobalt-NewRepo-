@@ -48,7 +48,7 @@ public class GuitarInputManager : MonoBehaviour
         string currentScene = SceneManager.GetActiveScene().name;
 
         // ★ 键盘直接检测（备用）
-        if (keyboard == null) keyboard = Keyboard.current;
+        if (keyboard == null) keyboard = Keyboard.current; // add debug line here to check if keyboard is null, which scene it is on
         if (keyboard != null)
         {
             if (keyboard.digit1Key.wasPressedThisFrame) OnStringPlayed?.Invoke(1);
