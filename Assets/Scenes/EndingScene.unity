@@ -406,7 +406,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &354568534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1636,6 +1636,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1413685039940848923, guid: 9c5a2700409595f4b9522c3e65734df0, type: 3}
+      propertyPath: m_RequestedTrackingOriginMode
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1816160107069218157, guid: 9c5a2700409595f4b9522c3e65734df0, type: 3}
       propertyPath: m_BackGroundColor.a
       value: 1
@@ -1841,7 +1845,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2042232700}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 13abe8a5b1f991b419c70412e74fd028, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: f055ab7eb2e18de45a65e907e95b23a6, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}

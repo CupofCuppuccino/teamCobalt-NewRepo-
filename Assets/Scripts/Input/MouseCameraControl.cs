@@ -59,20 +59,4 @@ public class MouseCameraControl : MonoBehaviour
             transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World);
         }
     }
-    
-    void OnGUI()
-    {
-        GUIStyle style = new GUIStyle();
-        style.normal.textColor = Color.white;
-        style.fontSize = 14;
-        style.fontStyle = FontStyle.Bold;
-        
-        GUILayout.BeginArea(new Rect(10, Screen.height - 100, 300, 100));
-        GUILayout.Label("=== 鼠标/键盘控制 ===", style);
-        GUILayout.Label("鼠标右键 + 拖动: 转动视角", style);
-        GUILayout.Label("WASD: 移动", style);
-        GUILayout.Label("按 1/2/3: 弹奏吉他弦", style);
-        GUILayout.Label("ESC: 释放鼠标", style);
-        GUILayout.EndArea();
-    }
 }

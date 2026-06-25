@@ -45,8 +45,8 @@ public class Note : MonoBehaviour
 
     private Renderer[] renderers;
     private Material[] materials;
-    private Color[] originalColors;
 
+    private Color[] originalBaseColors;
 
     private bool glowing = false;
 
@@ -74,8 +74,6 @@ public class Note : MonoBehaviour
         startPosition = transform.position;
 
 
-
-        // 找所有子物体Renderer
         renderers =
             GetComponentsInChildren<Renderer>();
 
@@ -83,7 +81,8 @@ public class Note : MonoBehaviour
         materials =
             new Material[renderers.Length];
 
-        originalColors =
+
+        originalBaseColors =
             new Color[renderers.Length];
 
 
@@ -92,8 +91,25 @@ public class Note : MonoBehaviour
             materials[i] =
                 renderers[i].material;
 
-            originalColors[i] =
-                materials[i].color;
+
+            Material mat = materials[i];
+
+
+            // ★ Shader Graph 用 BaseColor
+            if (mat.HasProperty("_BaseColor"))
+            {
+                originalBaseColors[i] =
+                    mat.GetColor("_BaseColor");
+            }
+            else if (mat.HasProperty("_Color"))
+            {
+                originalBaseColors[i] =
+                    mat.GetColor("_Color");
+            }
+            else
+            {
+                originalBaseColors[i] = Color.white;
+            }
         }
 
 
@@ -109,31 +125,60 @@ public class Note : MonoBehaviour
 
 
 
-
     void Update()
     {
         if (!isActive || isCaptured)
             return;
 
-        float progress = (Time.time - spawnTime) / travelDuration;
+
+        float progress =
+            (Time.time - spawnTime) / travelDuration;
+
+
         progress = Mathf.Clamp01(progress);
 
-        transform.position = Vector3.Lerp(startPosition, passPosition, progress);
 
-        float scale = Mathf.Lerp(minScale, maxScale, progress);
-        transform.localScale = Vector3.one * scale;
+        transform.position =
+            Vector3.Lerp(
+                startPosition,
+                passPosition,
+                progress
+            );
 
-        // ★ 恢复旋转
-        transform.Rotate(Vector3.up, 30f * Time.deltaTime);
-        transform.Rotate(Vector3.right, 20f * Time.deltaTime);
+
+        float scale =
+            Mathf.Lerp(
+                minScale,
+                maxScale,
+                progress
+            );
+
+
+        transform.localScale =
+            Vector3.one * scale;
+
+
+        transform.Rotate(
+            Vector3.up,
+            30f * Time.deltaTime
+        );
+
+
+        transform.Rotate(
+            Vector3.right,
+            20f * Time.deltaTime
+        );
+
 
         UpdateReadyGlow();
+
 
         if (progress >= 1f)
         {
             MissAndDestroy();
         }
     }
+
 
 
     void UpdateReadyGlow()
@@ -150,6 +195,8 @@ public class Note : MonoBehaviour
         }
     }
 
+
+
     public void Capture()
     {
         if (!isActive)
@@ -162,28 +209,17 @@ public class Note : MonoBehaviour
 
         if (data != null)
         {
-            string colorName = data.color;
-
-
             if (ScoreManager.Instance != null)
             {
                 ScoreManager.Instance.AddScore(
-                    colorName,
+                    data.color,
                     scoreValue
-                );
-            }
-            else
-            {
-                Debug.LogWarning(
-                    "ScoreManager 不存在"
                 );
             }
         }
 
 
-        // 保留事件，给以后扩展
         OnCaptured?.Invoke(data);
-
 
 
         PlayEffect(hitEffectPrefab);
@@ -192,12 +228,12 @@ public class Note : MonoBehaviour
         Destroy(gameObject);
     }
 
+
+
     public bool IsActive()
     {
         return isActive && !isCaptured;
     }
-
-
 
 
 
@@ -209,13 +245,12 @@ public class Note : MonoBehaviour
     }
 
 
+
     public bool IsInHitRange()
     {
         return GetDistanceToJudgeLine()
             <= HitManager.hitRange;
     }
-
-
 
 
 
@@ -239,53 +274,89 @@ public class Note : MonoBehaviour
 
 
 
-
-
     void PlayEffect(GameObject prefab)
     {
         if (prefab == null)
             return;
 
-        GameObject obj = Instantiate(prefab, transform.position, Quaternion.identity);
 
-        // ★ 强制所有特效都变为 0.5 倍速（不管命中还是未命中）
-        ParticleSystem[] systems = obj.GetComponentsInChildren<ParticleSystem>();
+        GameObject obj =
+            Instantiate(
+                prefab,
+                transform.position,
+                Quaternion.identity
+            );
+
+
+        ParticleSystem[] systems =
+            obj.GetComponentsInChildren<ParticleSystem>();
+
+
         foreach (ParticleSystem ps in systems)
         {
             var main = ps.main;
             main.simulationSpeed = 0.25f;
         }
 
+
         Destroy(obj, 4f);
     }
-
-
-
-
 
     void SetGlow(float intensity)
     {
         if (materials == null)
             return;
 
+
         for (int i = 0; i < materials.Length; i++)
         {
             Material mat = materials[i];
 
-            mat.EnableKeyword("_EMISSION");
 
-            // ★ 用白色发光，而不是用 originalColors[i]
-            Color emission = Color.white * intensity;
-            mat.SetColor("_EmissionColor", emission);
+            // 保留原颜色
+            Color baseColor =
+                originalBaseColors[i];
 
-            // ★ 不改变基础颜色，保持原来的颜色
-            // mat.color = originalColors[i];  // 注释掉这行
+
+            if (mat.HasProperty("_BaseColor"))
+            {
+                mat.SetColor(
+                    "_BaseColor",
+                    baseColor
+                );
+            }
+            else if (mat.HasProperty("_Color"))
+            {
+                mat.SetColor(
+                    "_Color",
+                    baseColor
+                );
+            }
+
+
+            // Shader Graph:
+            // SG_BaseColor_Lite 使用 EmissionIntensity
+            if (mat.HasProperty("_EmissionIntensity"))
+            {
+                mat.SetFloat(
+                    "_EmissionIntensity",
+                    intensity
+                );
+            }
+
+
+            // 兼容旧Shader
+            if (mat.HasProperty("_EmissionColor"))
+            {
+                mat.EnableKeyword("_EMISSION");
+
+                mat.SetColor(
+                    "_EmissionColor",
+                    Color.white * intensity
+                );
+            }
         }
     }
-
-
-
-
 
     void OnDestroy()
     {
